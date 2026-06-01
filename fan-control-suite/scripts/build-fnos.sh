@@ -11,7 +11,10 @@ rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}/control" "${BUILD_DIR}/data/opt/${PKG_NAME}" "${BUILD_DIR}/data/etc/fan-control-suite"
 
 cp "${ROOT_DIR}/package/fnos/CONTROL" "${BUILD_DIR}/control/control"
-cp "${ROOT_DIR}/package/fnos/"*.sh "${BUILD_DIR}/control/"
+for script in "${ROOT_DIR}/package/fnos/"*.sh; do
+  [ -e "${script}" ] || continue
+  cp "${script}" "${BUILD_DIR}/control/"
+done
 chmod +x "${BUILD_DIR}/control/"*.sh
 
 cp -r "${ROOT_DIR}/backend" "${BUILD_DIR}/data/opt/${PKG_NAME}/"

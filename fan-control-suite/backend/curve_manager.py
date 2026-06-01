@@ -3,6 +3,8 @@ from pathlib import Path
 
 
 class CurveManager:
+    DEFAULT_PWM = 40
+
     def __init__(self, curve_dir: str):
         self.curve_dir = Path(curve_dir)
         self.curve_dir.mkdir(parents=True, exist_ok=True)
@@ -27,7 +29,7 @@ class CurveManager:
     @staticmethod
     def interpolate_pwm(temp_c: float, points):
         if not points:
-            return 40
+            return CurveManager.DEFAULT_PWM
         points = sorted(points, key=lambda p: p["temp"])
         if temp_c <= points[0]["temp"]:
             return points[0]["pwm"]

@@ -124,8 +124,8 @@ class Handler(BaseHTTPRequestHandler):
         s = self.service
 
         if self.path == "/api/fan/manual":
-            s.controller.set_manual_percent(int(data["channel"]), int(data["percent"]))
             s.mode = "manual"
+            s.controller.set_manual_percent(int(data["channel"]), int(data["percent"]))
             self._json({"ok": True})
             return
 

@@ -10,7 +10,10 @@ rm -rf "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}/package" "${BUILD_DIR}/scripts" "${BUILD_DIR}/conf"
 
 cp "${ROOT_DIR}/package/synology/INFO" "${BUILD_DIR}/INFO"
-cp "${ROOT_DIR}/package/synology/scripts/"* "${BUILD_DIR}/scripts/"
+for script in "${ROOT_DIR}/package/synology/scripts/"*; do
+  [ -e "${script}" ] || continue
+  cp "${script}" "${BUILD_DIR}/scripts/"
+done
 chmod +x "${BUILD_DIR}/scripts/"*
 
 cp -r "${ROOT_DIR}/backend" "${BUILD_DIR}/package/"

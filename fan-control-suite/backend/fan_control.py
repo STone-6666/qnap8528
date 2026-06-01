@@ -17,6 +17,8 @@ class FanStatus:
 
 
 class HwmonFanController:
+    PWM_RAW_MAX = 255
+
     def __init__(self, hwmon_root: str, lock_file: str, failure_min_rpm: int = 300):
         self.hwmon_root = hwmon_root
         self.lock_file = lock_file
@@ -75,7 +77,7 @@ class HwmonFanController:
             pwm_enable = os.path.join(hwmon, f"pwm{channel}_enable")
             rpm = self._read_int(fan_path)
             pwm_raw = self._read_int(pwm_path)
-            pwm_percent = max(0, min(100, round((pwm_raw / 255.0) * 100)))
+            pwm_percent = max(0, min(100, round((pwm_raw / float(self.PWM_RAW_MAX)) * 100)))
             mode_value = self._read_int(pwm_enable, default=2)
             mode = "manual" if mode_value == 1 else "auto"
             failed = pwm_percent > 20 and rpm < self.failure_min_rpm
@@ -88,7 +90,7 @@ class HwmonFanController:
         hwmon = self._discover_hwmon()
         pwm_path = os.path.join(hwmon, f"pwm{channel}")
         pwm_enable = os.path.join(hwmon, f"pwm{channel}_enable")
-        pwm_raw = max(0, min(255, round(percent * 255 / 100)))
+        pwm_raw = max(0, min(self.PWM_RAW_MAX, round(percent * self.PWM_RAW_MAX / 100)))
         with self._file_lock():
             self._write_int(pwm_enable, 1)
             self._write_int(pwm_path, pwm_raw)
