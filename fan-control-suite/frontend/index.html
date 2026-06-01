@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EC8525 风扇控制</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main>
+    <h1>EC8525 风扇控制套件</h1>
+
+    <section class="card">
+      <h2>实时状态</h2>
+      <div id="status"></div>
+      <div id="alerts" class="alerts"></div>
+    </section>
+
+    <section class="card controls">
+      <h2>一键控制</h2>
+      <label>模式：
+        <select id="modeSelect">
+          <option value="auto">自动</option>
+          <option value="manual">手动</option>
+        </select>
+      </label>
+      <label>通道：<input id="channel" type="number" min="1" value="1" /></label>
+      <label>转速比例：<input id="manualPercent" type="range" min="0" max="100" value="50" /></label>
+      <span id="manualValue">50%</span>
+      <button id="applyManual">设置手动</button>
+      <button id="applyAuto">切回自动</button>
+    </section>
+
+    <section class="card">
+      <h2>风扇曲线</h2>
+      <div class="row">
+        <label>预设：
+          <select id="curveSelect"></select>
+        </label>
+        <button id="loadCurve">加载</button>
+        <button id="applyCurve">应用</button>
+      </div>
+      <canvas id="curveCanvas" width="700" height="280"></canvas>
+      <div id="points"></div>
+      <div class="row">
+        <input id="curveName" placeholder="custom" />
+        <button id="saveCurve">保存曲线</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="api.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

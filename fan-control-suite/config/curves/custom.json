@@ -1,0 +1,10 @@
+{
+  "name": "custom",
+  "points": [
+    {"temp": 30, "pwm": 35},
+    {"temp": 45, "pwm": 50},
+    {"temp": 60, "pwm": 65},
+    {"temp": 75, "pwm": 80},
+    {"temp": 85, "pwm": 95}
+  ]
+}

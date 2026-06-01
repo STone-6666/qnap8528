@@ -1,0 +1,10 @@
+{
+  "name": "performance",
+  "points": [
+    {"temp": 30, "pwm": 45},
+    {"temp": 45, "pwm": 60},
+    {"temp": 60, "pwm": 80},
+    {"temp": 70, "pwm": 95},
+    {"temp": 80, "pwm": 100}
+  ]
+}

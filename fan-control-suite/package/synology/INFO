@@ -1,0 +1,8 @@
+package="fan-control-suite"
+version="1.0.0"
+arch="x86_64"
+os_min_ver="7.0-40000"
+description="EC8525 fan control suite"
+maintainer="qnap8528 contributors"
+startable="yes"
+displayname="Fan Control Suite"
