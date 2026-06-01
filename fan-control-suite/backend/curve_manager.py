@@ -22,6 +22,15 @@ class CurveManager:
     def save_curve(self, name: str, data: dict):
         if "points" not in data or not isinstance(data["points"], list):
             raise ValueError("curve data must include points[]")
+        for point in data["points"]:
+            if not isinstance(point, dict) or "temp" not in point or "pwm" not in point:
+                raise ValueError("each point must include temp and pwm")
+            temp = float(point["temp"])
+            pwm = float(point["pwm"])
+            if temp < 0 or temp > 120:
+                raise ValueError("temp must be between 0 and 120")
+            if pwm < 0 or pwm > 100:
+                raise ValueError("pwm must be between 0 and 100")
         path = self.curve_dir / f"{name}.json"
         with path.open("w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2, ensure_ascii=False)

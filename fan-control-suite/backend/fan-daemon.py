@@ -89,7 +89,16 @@ class Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", "0"))
         if length == 0:
             return {}
-        return json.loads(self.rfile.read(length).decode("utf-8"))
+        try:
+            return json.loads(self.rfile.read(length).decode("utf-8"))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"invalid json body: {exc}") from exc
+
+    @staticmethod
+    def _require_fields(data, fields):
+        missing = [f for f in fields if f not in data]
+        if missing:
+            raise ValueError(f"missing required fields: {', '.join(missing)}")
 
     def _require_root(self):
         if os.geteuid() != 0:
@@ -120,42 +129,53 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self._require_root():
             return
-        data = self._parse()
+        try:
+            data = self._parse()
+        except ValueError as exc:
+            self._json({"error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
+            return
         s = self.service
 
-        if self.path == "/api/fan/manual":
-            s.mode = "manual"
-            s.controller.set_manual_percent(int(data["channel"]), int(data["percent"]))
-            self._json({"ok": True})
-            return
-
-        if self.path == "/api/fan/auto":
-            s.controller.set_auto_mode(int(data["channel"]))
-            s.mode = "auto"
-            self._json({"ok": True})
-            return
-
-        if self.path == "/api/mode":
-            mode = data.get("mode", "auto")
-            if mode not in {"auto", "manual"}:
-                self._json({"error": "invalid mode"}, status=HTTPStatus.BAD_REQUEST)
+        try:
+            if self.path == "/api/fan/manual":
+                self._require_fields(data, ["channel", "percent"])
+                s.mode = "manual"
+                s.controller.set_manual_percent(int(data["channel"]), int(data["percent"]))
+                self._json({"ok": True})
                 return
-            s.mode = mode
-            self._json({"ok": True, "mode": s.mode})
-            return
 
-        if self.path == "/api/curves/apply":
-            name = data["name"]
-            s.curves.load_curve(name)
-            s.active_curve = name
-            s.mode = "auto"
-            self._json({"ok": True})
-            return
+            if self.path == "/api/fan/auto":
+                self._require_fields(data, ["channel"])
+                s.controller.set_auto_mode(int(data["channel"]))
+                s.mode = "auto"
+                self._json({"ok": True})
+                return
 
-        if self.path.startswith("/api/curves/"):
-            name = self.path.split("/")[-1]
-            s.curves.save_curve(name, data)
-            self._json({"ok": True})
+            if self.path == "/api/mode":
+                mode = data.get("mode", "auto")
+                if mode not in {"auto", "manual"}:
+                    self._json({"error": "invalid mode"}, status=HTTPStatus.BAD_REQUEST)
+                    return
+                s.mode = mode
+                self._json({"ok": True, "mode": s.mode})
+                return
+
+            if self.path == "/api/curves/apply":
+                self._require_fields(data, ["name"])
+                name = data["name"]
+                s.curves.load_curve(name)
+                s.active_curve = name
+                s.mode = "auto"
+                self._json({"ok": True})
+                return
+
+            if self.path.startswith("/api/curves/"):
+                name = self.path.split("/")[-1]
+                s.curves.save_curve(name, data)
+                self._json({"ok": True})
+                return
+        except (ValueError, TypeError, FileNotFoundError) as exc:
+            self._json({"error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
             return
 
         self._json({"error": "not found"}, status=HTTPStatus.NOT_FOUND)
