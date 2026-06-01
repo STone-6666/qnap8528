@@ -4,7 +4,7 @@ from pathlib import Path
 
 DEFAULT_CONFIG = {
     "service": {
-        "host": "0.0.0.0",
+        "host": "127.0.0.1",
         "port": "8528",
         "poll_interval": "5",
         "auto_load_module": "true",
