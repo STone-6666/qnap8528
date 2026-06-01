@@ -14,7 +14,10 @@ for script in "${ROOT_DIR}/package/synology/scripts/"*; do
   [ -e "${script}" ] || continue
   cp "${script}" "${BUILD_DIR}/scripts/"
 done
-chmod +x "${BUILD_DIR}/scripts/"*
+for script in "${BUILD_DIR}/scripts/"*; do
+  [ -e "${script}" ] || continue
+  chmod +x "${script}"
+done
 
 cp -r "${ROOT_DIR}/backend" "${BUILD_DIR}/package/"
 cp -r "${ROOT_DIR}/frontend" "${BUILD_DIR}/package/"

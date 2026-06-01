@@ -15,7 +15,10 @@ for script in "${ROOT_DIR}/package/fnos/"*.sh; do
   [ -e "${script}" ] || continue
   cp "${script}" "${BUILD_DIR}/control/"
 done
-chmod +x "${BUILD_DIR}/control/"*.sh
+for script in "${BUILD_DIR}/control/"*.sh; do
+  [ -e "${script}" ] || continue
+  chmod +x "${script}"
+done
 
 cp -r "${ROOT_DIR}/backend" "${BUILD_DIR}/data/opt/${PKG_NAME}/"
 cp -r "${ROOT_DIR}/frontend" "${BUILD_DIR}/data/opt/${PKG_NAME}/"

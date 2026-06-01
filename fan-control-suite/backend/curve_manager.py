@@ -25,8 +25,11 @@ class CurveManager:
         for point in data["points"]:
             if not isinstance(point, dict) or "temp" not in point or "pwm" not in point:
                 raise ValueError("each point must include temp and pwm")
-            temp = float(point["temp"])
-            pwm = float(point["pwm"])
+            try:
+                temp = float(point["temp"])
+                pwm = float(point["pwm"])
+            except (TypeError, ValueError) as exc:
+                raise ValueError("temp and pwm must be numeric") from exc
             if temp < 0 or temp > 120:
                 raise ValueError("temp must be between 0 and 120")
             if pwm < 0 or pwm > 100:

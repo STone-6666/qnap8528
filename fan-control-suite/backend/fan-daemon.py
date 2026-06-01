@@ -100,6 +100,13 @@ class Handler(BaseHTTPRequestHandler):
         if missing:
             raise ValueError(f"missing required fields: {', '.join(missing)}")
 
+    @staticmethod
+    def _as_int(value, name):
+        try:
+            return int(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{name} must be an integer") from exc
+
     def _require_root(self):
         if os.geteuid() != 0:
             self._json({"error": "root privileges required"}, status=HTTPStatus.FORBIDDEN)
@@ -139,14 +146,19 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if self.path == "/api/fan/manual":
                 self._require_fields(data, ["channel", "percent"])
+                channel = self._as_int(data["channel"], "channel")
+                percent = self._as_int(data["percent"], "percent")
+                if percent < 0 or percent > 100:
+                    raise ValueError("percent must be 0-100")
                 s.mode = "manual"
-                s.controller.set_manual_percent(int(data["channel"]), int(data["percent"]))
+                s.controller.set_manual_percent(channel, percent)
                 self._json({"ok": True})
                 return
 
             if self.path == "/api/fan/auto":
                 self._require_fields(data, ["channel"])
-                s.controller.set_auto_mode(int(data["channel"]))
+                channel = self._as_int(data["channel"], "channel")
+                s.controller.set_auto_mode(channel)
                 s.mode = "auto"
                 self._json({"ok": True})
                 return
