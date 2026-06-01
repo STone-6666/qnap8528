@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+mkdir -p /usr/local/fan-control-suite /etc/fan-control-suite/curves
+exit 0

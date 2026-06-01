@@ -1,0 +1,10 @@
+{
+  "name": "balanced",
+  "points": [
+    {"temp": 30, "pwm": 30},
+    {"temp": 45, "pwm": 45},
+    {"temp": 60, "pwm": 60},
+    {"temp": 75, "pwm": 75},
+    {"temp": 85, "pwm": 95}
+  ]
+}

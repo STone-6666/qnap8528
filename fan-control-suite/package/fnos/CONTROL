@@ -1,0 +1,6 @@
+Package: fan-control-suite
+Version: 1.0.0
+Architecture: x86_64
+Maintainer: qnap8528 contributors
+Depends: python3
+Description: EC8525 fan control suite for fnOS

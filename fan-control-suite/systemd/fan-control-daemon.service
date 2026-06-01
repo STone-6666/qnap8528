@@ -1,0 +1,15 @@
+[Unit]
+Description=EC8525 Fan Control Daemon
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStartPre=/sbin/modprobe qnap8528
+ExecStart=/usr/bin/python3 /opt/fan-control-suite/backend/fan-daemon.py --config /etc/fan-control-suite/fan-control.conf
+Restart=always
+RestartSec=3
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+{
+  "name": "silent",
+  "points": [
+    {"temp": 30, "pwm": 20},
+    {"temp": 45, "pwm": 30},
+    {"temp": 60, "pwm": 45},
+    {"temp": 75, "pwm": 65},
+    {"temp": 85, "pwm": 85}
+  ]
+}
